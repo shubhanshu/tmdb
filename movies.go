@@ -24,13 +24,14 @@ type SearchResponse struct {
 }
 
 type MovieSearchRequest struct {
-	Name string
-	Page int
+	Query        string
+	Page         int
 	IncludeAdult bool
+	Year         int
 }
 
 func NewMovieSearchRequest(name string) *MovieSearchRequest {
-	return &MovieSearchRequest{name, 1, true}
+	return &MovieSearchRequest{name, 1, true, 0}
 }
 
 
@@ -42,18 +43,21 @@ var moviesSearchAPI = &apiConfig{
 
 func (r *MovieSearchRequest) params() (q url.Values) {
 	q = make(url.Values)
-	q.Set("query", r.Name)
+	q.Set("query", r.Query)
 	q.Set("page", string(r.Page))
 	q.Set("include_adult", strconv.FormatBool(r.IncludeAdult))
+	if r.Year != 0 {
+		q.Set("year", string(r.Year))
+	}
 	return
 }
 
-func (c *Client) SearchMovies(r *MovieSearchRequest) (*Movie, error) {
-	if (r.Name == "") {
+func (c *Client) SearchMovies(req *MovieSearchRequest) ([]Movie, error) {
+	if (req.Query == "") {
 		return nil, errors.New("Movie name is required to search")
 	}
 	resp := new(SearchResponse)
-	err := c.getJSON(moviesSearchAPI, r, resp)
+	err := c.getJSON(moviesSearchAPI, req, resp)
 	if (err != nil) {
 		return nil, err
 	}
@@ -61,6 +65,6 @@ func (c *Client) SearchMovies(r *MovieSearchRequest) (*Movie, error) {
 	if resp.TotalResults == 0 {
 		return nil, errors.New("Result not found")
 	}
-	return &resp.Results[0], nil
+	return resp.Results, nil
 }
 

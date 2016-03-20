@@ -36,6 +36,14 @@ func TestSearchingFightClub(t *testing.T) {
 	      "overview": "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy.",
 	      "release_date": "1999-10-14",
 	      "poster_path": "/811DjJTon9gD6hZ8nCjSitaIXFQ.jpg"
+	    },
+	    {
+	      "adult": false,
+	      "id": 259016,
+	      "original_title": "Insane Fight Club",
+	      "overview": "A group of friends have created a brand new subculture that is taking over the streets of Glasgow.",
+	      "release_date": "2014-03-11",
+	      "poster_path": "/mLhwBQPV3iATe3L61kbpmxANwL8.jpg"
 	    }
 	  ],
 	  "total_pages": 1,
@@ -48,21 +56,31 @@ func TestSearchingFightClub(t *testing.T) {
 	request := NewMovieSearchRequest("fight club")
 	client, _ := NewClient(WithAPIKey(apiKey))
 	client.baseURL = server.URL
-	movie, err := client.SearchMovies(request)
+	movies, err := client.SearchMovies(request)
 	if err != nil {
 		t.Errorf("Get returned non nil error: %v", err)
 	}
 
-	correctMovie := &Movie {
-		ID: 550,
-		Title: "Fight Club",
-		Overview: "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy.",
-		PosterPath: "/811DjJTon9gD6hZ8nCjSitaIXFQ.jpg",
-		ReleaseDate: "1999-10-14",
+	correctMovies := []Movie {
+		Movie {
+			ID: 550,
+			Title: "Fight Club",
+			Overview: "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy.",
+			PosterPath: "/811DjJTon9gD6hZ8nCjSitaIXFQ.jpg",
+			ReleaseDate: "1999-10-14",
+		},
+		Movie {
+			ID: 259016,
+			Title: "Insane Fight Club",
+			Overview: "A group of friends have created a brand new subculture that is taking over the streets of Glasgow.",
+			PosterPath: "/mLhwBQPV3iATe3L61kbpmxANwL8.jpg",
+			ReleaseDate: "2014-03-11",
+		},
+
 	}
 
-	if !reflect.DeepEqual(movie, correctMovie) {
-		t.Errorf("expected %+v, was %+v", correctMovie, movie)
+	if !reflect.DeepEqual(movies, correctMovies) {
+		t.Errorf("expected %+v, was %+v", correctMovies, movies)
 	}
 }
 
