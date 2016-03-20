@@ -86,15 +86,15 @@ func (c *Client) get(config *apiConfig, apiReq apiRequest) (*http.Response, erro
 	}
 
 	host := config.host
-	if c.baseURL == "" {
-		return nil, errors.New("host not configured")
+	if c.baseURL != "" {
+		host = c.baseURL
 	}
-	host = c.baseURL
+
 	q, err := c.generateQuery(config.path, apiReq.params())
 	if err != nil {
 		return nil, err
 	}
-	url := host+config.path+q
+	url := host+config.path+"?"+q
 	return http.Get(url)
 }
 
