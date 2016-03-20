@@ -8,14 +8,13 @@ import (
 	"time"
 )
 
-
 // Client may be used to make requests to the TMDB WebService APIs
 type Client struct {
-httpClient        *http.Client
-apiKey            string
-baseURL           string
-requestsPerSecond int
-rateLimiter       chan int
+	httpClient        *http.Client
+	apiKey            string
+	baseURL           string
+	requestsPerSecond int
+	rateLimiter       chan int
 }
 
 // ClientOption is the type of constructor options for NewClient(...).
@@ -33,7 +32,7 @@ func NewClient(options ...ClientOption) (*Client, error) {
 			return nil, err
 		}
 	}
-	if c.apiKey == ""  {
+	if c.apiKey == "" {
 		return nil, errors.New("tmdb: API Key missing")
 	}
 
@@ -46,7 +45,7 @@ func NewClient(options ...ClientOption) (*Client, error) {
 	}
 	go func() {
 		// Refill rateLimiter continuously
-		for _ = range time.Tick(time.Second / time.Duration(c.requestsPerSecond)) {
+		for range time.Tick(time.Second / time.Duration(c.requestsPerSecond)) {
 			c.rateLimiter <- 1
 		}
 	}()
@@ -71,8 +70,8 @@ func WithAPIKey(apiKey string) ClientOption {
 }
 
 type apiConfig struct {
-	host            string
-	path            string
+	host string
+	path string
 }
 
 type apiRequest interface {
@@ -82,7 +81,7 @@ type apiRequest interface {
 func (c *Client) get(config *apiConfig, apiReq apiRequest) (*http.Response, error) {
 	select {
 	case <-c.rateLimiter:
-	// Execute request.
+		// Execute request.
 	}
 
 	host := config.host
@@ -94,7 +93,7 @@ func (c *Client) get(config *apiConfig, apiReq apiRequest) (*http.Response, erro
 	if err != nil {
 		return nil, err
 	}
-	url := host+config.path+"?"+q
+	url := host + config.path + "?" + q
 	return http.Get(url)
 }
 
@@ -104,7 +103,7 @@ func (c *Client) getJSON(config *apiConfig, apiReq apiRequest, resp interface{})
 		return err
 	}
 
-	if (httpResp.StatusCode/100 != 2) {
+	if httpResp.StatusCode/100 != 2 {
 		return errors.New(httpResp.Status)
 	}
 

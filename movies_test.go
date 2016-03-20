@@ -1,15 +1,14 @@
 package tmdb
 
 import (
-	"net/http/httptest"
 	"fmt"
 	"net/http"
-	"testing"
+	"net/http/httptest"
 	"reflect"
+	"testing"
 )
 
 const apiKey = "apikey"
-
 
 func mockServer(status int, body string) *httptest.Server {
 	server := new(httptest.Server)
@@ -22,7 +21,6 @@ func mockServer(status int, body string) *httptest.Server {
 
 	return server
 }
-
 
 func TestSearchingFightClub(t *testing.T) {
 	response := `{
@@ -61,29 +59,27 @@ func TestSearchingFightClub(t *testing.T) {
 		t.Errorf("Get returned non nil error: %v", err)
 	}
 
-	correctMovies := []Movie {
-		Movie {
-			ID: 550,
-			Title: "Fight Club",
-			Overview: "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy.",
-			PosterPath: "/811DjJTon9gD6hZ8nCjSitaIXFQ.jpg",
+	correctMovies := []Movie{
+		{
+			ID:          550,
+			Title:       "Fight Club",
+			Overview:    "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy.",
+			PosterPath:  "/811DjJTon9gD6hZ8nCjSitaIXFQ.jpg",
 			ReleaseDate: "1999-10-14",
 		},
-		Movie {
-			ID: 259016,
-			Title: "Insane Fight Club",
-			Overview: "A group of friends have created a brand new subculture that is taking over the streets of Glasgow.",
-			PosterPath: "/mLhwBQPV3iATe3L61kbpmxANwL8.jpg",
+		{
+			ID:          259016,
+			Title:       "Insane Fight Club",
+			Overview:    "A group of friends have created a brand new subculture that is taking over the streets of Glasgow.",
+			PosterPath:  "/mLhwBQPV3iATe3L61kbpmxANwL8.jpg",
 			ReleaseDate: "2014-03-11",
 		},
-
 	}
 
 	if !reflect.DeepEqual(movies, correctMovies) {
 		t.Errorf("expected %+v, was %+v", correctMovies, movies)
 	}
 }
-
 
 func TestNoResult(t *testing.T) {
 	response := ""
