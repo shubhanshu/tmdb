@@ -65,6 +65,6 @@ func (c *Client) SearchMovies(req *MovieSearchRequest) ([]Movie, error) {
 	if resp.TotalResults == 0 {
 		return nil, errors.New("Result not found")
 	}
-	return resp.Results, nil
+	return resp.Results[0:], nil
 }
 
